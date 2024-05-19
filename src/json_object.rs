@@ -1,4 +1,4 @@
-use self::{errors::JsonObjectError, json_entity::JsonEntity, traits::JsonValueTrait};
+use self::{json_entity::JsonEntity, traits::JsonValueTrait};
 mod errors;
 mod json_entity;
 mod traits;
@@ -44,6 +44,8 @@ impl JsonObject {
     }
 }
 
+// TEST
+//-----------------------------------------------------------------------------------------------
 #[test]
 fn jsonobject_add_string_test() {
     let mut json = JsonObject::new();

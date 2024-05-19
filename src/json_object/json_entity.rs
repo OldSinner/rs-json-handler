@@ -49,6 +49,9 @@ fn quote(str: &String) -> String {
     format!("\"{str}\"")
 }
 
+// TEST
+//-----------------------------------------------------------------------------------------------
+
 #[test]
 fn jsonentity_boolean_get_value_as_string_test() {
     let x = JsonEntity::Boolean(false);

@@ -16,9 +16,24 @@ pub mod jsonobject {
                 JsonObject::Number(n) => n.to_string(),
                 JsonObject::Boolean(b) => b.to_string(),
                 JsonObject::Array(arr) => build_from_array(&arr),
+                JsonObject::Object(obj) => build_from_obj(&obj),
                 _ => panic!("Not implemented! Aaaa!"),
             }
         }
+    }
+
+    fn build_from_obj(obj: &HashMap<String, JsonObject>) -> String {
+        let mut st = String::from("{");
+
+        for (key, val) in obj.iter() {
+            st.push_str(quote(&key).as_str());
+            st.push_str(":");
+            st.push_str(val.get_value_as_string().as_str());
+            st.push_str(",");
+        }
+        st.pop();
+        st.push_str("}");
+        st
     }
 
     fn build_from_array(arr: &Vec<JsonObject>) -> String {

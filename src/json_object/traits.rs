@@ -1,4 +1,4 @@
-use super::json_entity::JsonEntity;
+use super::{json_entity::JsonEntity, JsonObject};
 
 pub trait JsonValueTrait {
     fn get_as_json_entity(self) -> JsonEntity;
@@ -23,5 +23,11 @@ impl JsonValueTrait for bool {
 impl JsonValueTrait for f32 {
     fn get_as_json_entity(self) -> JsonEntity {
         JsonEntity::Number(self)
+    }
+}
+
+impl JsonValueTrait for JsonObject {
+    fn get_as_json_entity(self) -> JsonEntity {
+        self.obj
     }
 }

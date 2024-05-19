@@ -1,5 +1,20 @@
 pub mod jsonobject {
-    use std::{collections::HashMap, f32, fmt::Error};
+
+    #[derive(Debug, Clone)]
+    struct JsonObjectError;
+
+    impl fmt::Display for JsonObjectError {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            write!(f, "Error occured during json maniuplation")
+        }
+    }
+
+    use core::panic;
+    use std::{
+        collections::HashMap,
+        f32,
+        fmt::{self, Error},
+    };
 
     pub struct JsonObject {
         obj: JsonEntity,
@@ -12,11 +27,17 @@ pub mod jsonobject {
             JsonObject { obj: ent }
         }
 
-        pub fn add_text(&self, name: String, value: String) -> Result<String, Error> {
-            match &self.obj {
-                JsonEntity::Object(map) => {}
-                _ => panic!("Wrong type of entity!"),
+        pub fn add_text(&mut self, name: String, value: String) -> () {
+            match &mut self.obj {
+                JsonEntity::Object(map) => {
+                    map.insert(name, JsonEntity::Text(value));
+                }
+                _ => panic!("Wrong Entity Type!"),
             }
+        }
+
+        pub fn flush_to_string(self) -> String {
+            self.obj.flush_to_string()
         }
     }
 
@@ -130,5 +151,12 @@ pub mod jsonobject {
             obj.get_value_as_string(),
             String::from("{\"BooleanValue\":false,\"NumericValue\":10}")
         );
+    }
+
+    #[test]
+    fn JsonEntity_add_string_test() {
+        let mut json = JsonObject::new();
+        json.add_text(String::from("Test"), String::from("abc"));
+        assert_eq!(json.flush_to_string(), String::from("{\"Test\":\"abc\"}"));
     }
 }

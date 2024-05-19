@@ -11,12 +11,7 @@ pub mod jsonobject {
     impl JsonObject {
         pub fn get_string(self) -> String {
             match self {
-                JsonObject::Text(s) => {
-                    let mut st = String::from("\"");
-                    st.push_str(s.as_str());
-                    st.push('\"');
-                    st
-                }
+                JsonObject::Text(s) => quote(s),
                 JsonObject::Number(n) => n.to_string(),
                 JsonObject::Boolean(b) => {
                     if b {
@@ -37,6 +32,13 @@ pub mod jsonobject {
                 _ => panic!("Not implemented! Aaaa!"),
             }
         }
+    }
+
+    fn quote(str: String) -> String {
+        let mut st = String::from("\"");
+        st.push_str(str.as_str());
+        st.push('\"');
+        st
     }
 }
 

@@ -25,3 +25,6 @@ pub mod jsonobject {
         }
     }
 }
+
+#[cfg(test)]
+mod tests;

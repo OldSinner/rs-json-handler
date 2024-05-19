@@ -5,7 +5,6 @@ mod traits;
 use core::panic;
 use std::{
     collections::HashMap,
-    f32,
     fmt::{self},
 };
 

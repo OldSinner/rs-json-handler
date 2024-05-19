@@ -9,6 +9,11 @@ impl JsonValueTrait for String {
         JsonEntity::Text(self)
     }
 }
+impl JsonValueTrait for &str {
+    fn get_as_json_entity(self) -> JsonEntity {
+        JsonEntity::Text(self.to_string())
+    }
+}
 impl JsonValueTrait for bool {
     fn get_as_json_entity(self) -> JsonEntity {
         JsonEntity::Boolean(self)

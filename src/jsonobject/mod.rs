@@ -26,10 +26,7 @@ pub mod jsonobject {
         let mut st = String::from("{");
 
         for (key, val) in obj.iter() {
-            st.push_str(quote(&key).as_str());
-            st.push_str(":");
-            st.push_str(val.get_value_as_string().as_str());
-            st.push_str(",");
+            st.push_str(format!("{}:{},", quote(&key), val.get_value_as_string()).as_str());
         }
         st.pop();
         st.push_str("}");
@@ -47,12 +44,8 @@ pub mod jsonobject {
     }
 
     fn quote(str: &String) -> String {
-        let mut st = String::from("\"");
-        st.push_str(str.as_str());
-        st.push('\"');
-        st
+        format!("\"{str}\"")
     }
 }
-
 #[cfg(test)]
 mod tests;

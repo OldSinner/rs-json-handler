@@ -1,8 +1,7 @@
-use self::errors::JsonObjectError;
-use self::json_entity::JsonEntity;
+use self::{errors::JsonObjectError, json_entity::JsonEntity, traits::JsonValueTrait};
 mod errors;
 mod json_entity;
-
+mod traits;
 use core::panic;
 use std::{
     collections::HashMap,
@@ -21,18 +20,12 @@ impl JsonObject {
         JsonObject { obj: ent }
     }
 
-    pub fn add_text(
-        &mut self,
-        name: String,
-        value: String,
-    ) -> Result<&JsonObject, JsonObjectError> {
+    pub fn add<T: JsonValueTrait>(&mut self, key: &str, value: T) {
         match &mut self.obj {
             JsonEntity::Object(map) => {
-                map.insert(name, JsonEntity::Text(value))
-                    .or(return Err(JsonObjectError));
-                return Ok(&self);
+                map.insert(key.to_string(), value.get_as_json_entity());
             }
-            _ => panic!("Wrong Entity Type!"),
+            _ => panic!("Wront Type! That Shouldn't happend! Panic! Abort Mission!"),
         }
     }
 
@@ -42,9 +35,8 @@ impl JsonObject {
 }
 
 #[test]
-fn JsonEntity_add_string_test() {
+fn jsonobject_add_string_test() {
     let mut json = JsonObject::new();
-    json.add_text(String::from("Test"), String::from("abc"));
-    json.add_text(String::from("Test"), String::from("abc"));
+    json.add("Test", String::from("abc"));
     assert_eq!(json.flush_to_string(), String::from("{\"Test\":\"abc\"}"));
 }

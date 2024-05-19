@@ -50,32 +50,32 @@ fn quote(str: &String) -> String {
 }
 
 #[test]
-fn JsonEntity_boolean_get_value_as_string_test() {
+fn jsonentity_boolean_get_value_as_string_test() {
     let x = JsonEntity::Boolean(false);
     assert_eq!(x.get_value_as_string(), String::from("false"))
 }
 
 #[test]
-fn JsonEntity_text_get_value_as_string_test() {
+fn jsonentity_text_get_value_as_string_test() {
     let x = JsonEntity::Text(String::from("test"));
     assert_eq!(x.get_value_as_string(), String::from("\"test\""));
     println!("{:?}", x);
 }
 
 #[test]
-fn JsonEntity_intnumber_get_value_as_string_test() {
+fn jsonentity_intnumber_get_value_as_string_test() {
     let x = JsonEntity::Number(10.0);
     assert_eq!(x.get_value_as_string(), String::from("10"));
 }
 
 #[test]
-fn JsonEntity_floatnumber_get_value_as_string_test() {
+fn jsonentity_floatnumber_get_value_as_string_test() {
     let x = JsonEntity::Number(10.1);
     assert_eq!(x.get_value_as_string(), String::from("10.1"));
 }
 
 #[test]
-fn JsonEntity_array_ofnumbes_get_value_as_string_test() {
+fn jsonentity_array_ofnumbes_get_value_as_string_test() {
     let x = JsonEntity::Array(vec![
         JsonEntity::Number(10.0),
         JsonEntity::Number(3.1),
@@ -85,7 +85,7 @@ fn JsonEntity_array_ofnumbes_get_value_as_string_test() {
 }
 
 #[test]
-fn JsonEntity_array_get_value_as_string_test() {
+fn jsonentity_array_get_value_as_string_test() {
     let x = JsonEntity::Array(vec![
         JsonEntity::Text(String::from("asd")),
         JsonEntity::Text(String::from("asd")),
@@ -103,7 +103,7 @@ fn get_hashpmap() -> HashMap<String, JsonEntity> {
     map
 }
 #[test]
-fn JsonEntity_object_get_value_as_string_test() {
+fn jsonentity_object_get_value_as_string_test() {
     let map = get_hashpmap();
     let obj = JsonEntity::Object(map);
     assert_eq!(

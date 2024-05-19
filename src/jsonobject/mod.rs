@@ -1,7 +1,7 @@
 pub mod jsonobject {
 
     #[derive(Debug, Clone)]
-    struct JsonObjectError;
+    pub struct JsonObjectError;
 
     impl fmt::Display for JsonObjectError {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -13,7 +13,7 @@ pub mod jsonobject {
     use std::{
         collections::HashMap,
         f32,
-        fmt::{self, Error},
+        fmt::{self},
     };
 
     pub struct JsonObject {
@@ -27,10 +27,16 @@ pub mod jsonobject {
             JsonObject { obj: ent }
         }
 
-        pub fn add_text(&mut self, name: String, value: String) -> () {
+        pub fn add_text(
+            &mut self,
+            name: String,
+            value: String,
+        ) -> Result<&JsonObject, JsonObjectError> {
             match &mut self.obj {
                 JsonEntity::Object(map) => {
-                    map.insert(name, JsonEntity::Text(value));
+                    map.insert(name, JsonEntity::Text(value))
+                        .or(return Err(JsonObjectError));
+                    return Ok(&self);
                 }
                 _ => panic!("Wrong Entity Type!"),
             }
@@ -156,6 +162,7 @@ pub mod jsonobject {
     #[test]
     fn JsonEntity_add_string_test() {
         let mut json = JsonObject::new();
+        json.add_text(String::from("Test"), String::from("abc"));
         json.add_text(String::from("Test"), String::from("abc"));
         assert_eq!(json.flush_to_string(), String::from("{\"Test\":\"abc\"}"));
     }

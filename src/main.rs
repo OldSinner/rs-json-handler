@@ -1,7 +1,4 @@
-use crate::jsonobject::jsonobject::JsonObject;
-
-pub mod jsonobject;
-
+mod json_object;
 fn main() {
     println!("Hello, world!");
 }

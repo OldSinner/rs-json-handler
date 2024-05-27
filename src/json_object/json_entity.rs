@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::Chars};
 
 #[derive(Debug)]
 pub enum JsonEntity {
@@ -7,6 +7,25 @@ pub enum JsonEntity {
     Boolean(bool),
     Array(Vec<JsonEntity>),
     Object(HashMap<String, JsonEntity>),
+}
+
+pub struct JsonTokenValue {
+    value_type: JsonTokenType,
+    value: String,
+}
+
+pub enum JsonTokenType {
+    BraceOpen,
+    BraceClose,
+    BracketOpen,
+    BracketClose,
+    String,
+    Number,
+    Comma,
+    Colon,
+    True,
+    False,
+    Null,
 }
 
 impl JsonEntity {
@@ -22,8 +41,72 @@ impl JsonEntity {
     pub fn flush_to_string(self) -> String {
         self.get_value_as_string()
     }
+
+    pub fn from_chars(chars: &mut Chars) -> JsonEntity {
+        JsonEntity::Number(1.1)
+    }
+
+    fn build_token_vec(chars: &mut Chars) -> Vec<JsonTokenValue> {
+        let mut vec = Vec::new();
+        while let Some(c) = chars.next() {
+            if c == '{' {
+                vec.push(JsonTokenValue {
+                    value_type: JsonTokenType::BraceOpen,
+                    value: c.to_string(),
+                })
+            } else if c == '}' {
+                vec.push(JsonTokenValue {
+                    value_type: JsonTokenType::BraceClose,
+                    value: c.to_string(),
+                })
+            } else if c == '[' {
+                vec.push(JsonTokenValue {
+                    value_type: JsonTokenType::BracketOpen,
+                    value: c.to_string(),
+                })
+            } else if c == ']' {
+                vec.push(JsonTokenValue {
+                    value_type: JsonTokenType::BracketClose,
+                    value: c.to_string(),
+                })
+            } else if c == ':' {
+                vec.push(JsonTokenValue {
+                    value_type: JsonTokenType::Colon,
+                    value: c.to_string(),
+                })
+            } else if c == ',' {
+                vec.push(JsonTokenValue {
+                    value_type: JsonTokenType::Comma,
+                    value: c.to_string(),
+                })
+            } else if c == 'f' {
+                check_if_boolean(chars, &mut vec);
+            } else if c == '"' {
+                let mut value = String::new();
+                while let Some(c_n) = chars.next() {
+                    if (c_n == '"') {
+                        break;
+                    } else {
+                        value.push(c_n)
+                    }
+                }
+            }
+        }
+        vec
+    }
 }
 
+fn check_if_boolean(chars: &mut Chars, vec: &mut Vec<JsonTokenValue>) {
+    let values = chars.clone().take(4);
+    if String::from_iter(values) == String::from("alse") {
+        vec.push(JsonTokenValue {
+            value_type: JsonTokenType::False,
+            value: String::from("false"),
+        })
+    } else {
+        panic!("Unnown Value, when interpreting \"False\" token")
+    }
+}
 fn build_from_obj(obj: &HashMap<String, JsonEntity>) -> String {
     let mut st = String::from("{");
 

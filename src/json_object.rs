@@ -1,6 +1,7 @@
 use self::{json_entity::JsonEntity, traits::JsonValueTrait};
 mod errors;
 mod json_entity;
+mod json_parser;
 mod traits;
 use core::panic;
 use std::collections::HashMap;

@@ -1,4 +1,4 @@
-use std::{char, str::Chars, vec};
+use std::{char, collections::HashMap, str::Chars, vec};
 
 use super::json_entity::JsonEntity;
 
@@ -20,9 +20,37 @@ pub enum JsonTokenType {
     Colon,
     True,
     False,
-    Null,
 }
-pub fn build_token_vec(chars: &mut Chars) -> Vec<JsonTokenValue> {
+
+fn parse_value(value: JsonTokenValue, vec: &mut Vec<JsonTokenValue>) -> JsonEntity {
+    match value.value_type {
+        JsonTokenType::String => {
+            return JsonEntity::Text(value.value);
+        }
+        JsonTokenType::Number => {
+            return JsonEntity::Number(value.value.parse::<f32>().unwrap());
+        }
+        JsonTokenType::True => {
+            return JsonEntity::Boolean(true);
+        }
+        JsonTokenType::False => {
+            return JsonEntity::Boolean(false);
+        }
+        JsonTokenType::BraceOpen => return build_object(vec),
+        JsonTokenType::BracketOpen => return build_array(vec),
+        _ => panic!("Unexpected Token!"),
+    }
+}
+
+fn build_array(vec: &mut Vec<JsonTokenValue>) -> JsonEntity {
+    todo!()
+}
+
+fn build_object(vec: &mut Vec<JsonTokenValue>) -> JsonEntity {
+    todo!()
+}
+
+fn build_token_vec(chars: &mut Chars) -> Vec<JsonTokenValue> {
     let mut vec = Vec::new();
     while let Some(c) = chars.next() {
         determinate_token(c, &mut vec, chars);
@@ -65,9 +93,11 @@ fn determinate_token(c: char, vec: &mut Vec<JsonTokenValue>, chars: &mut Chars) 
         check_if_false(chars, vec);
     } else if c == 't' {
         check_if_true(chars, vec)
-    } else if c == 'n' {
-        check_if_null(chars, vec)
-    } else if c == '"' {
+    }
+    // else if c == 'n' {
+    //     check_if_null(chars, vec)
+    // }
+    else if c == '"' {
         get_string_value(chars, vec);
     } else if NumericChar.contains(&c) {
         get_number_value(chars, vec, c);
@@ -131,17 +161,17 @@ fn check_if_true(chars: &mut Chars, vec: &mut Vec<JsonTokenValue>) {
     }
 }
 
-fn check_if_null(chars: &mut Chars, vec: &mut Vec<JsonTokenValue>) {
-    let values = chars.take(3);
-    if String::from_iter(values) == String::from("ull") {
-        vec.push(JsonTokenValue {
-            value_type: JsonTokenType::Null,
-            value: String::from("null"),
-        })
-    } else {
-        panic!("Unnown Value, when interpreting \"null\" token")
-    }
-}
+// fn check_if_null(chars: &mut Chars, vec: &mut Vec<JsonTokenValue>) {
+//     let values = chars.take(3);
+//     if String::from_iter(values) == String::from("ull") {
+//         vec.push(JsonTokenValue {
+//             value_type: JsonTokenType::Null,
+//             value: String::from("null"),
+//         })
+//     } else {
+//         panic!("Unnown Value, when interpreting \"null\" token")
+//     }
+// }
 
 // TEST
 //-----------------------------------------------------------------------------------------------
@@ -169,17 +199,17 @@ fn check_if_true_test() {
     assert!(chars.count() == 0);
 }
 
-#[test]
-fn check_if_null_test() {
-    let mut str = String::from("null");
-    let mut chars = str.chars();
-    let char = chars.next().unwrap();
-    assert_eq!(char, 'n');
-    let mut vec = Vec::new();
-    check_if_null(&mut chars, &mut vec);
-    assert!(vec.len() > 0);
-    assert!(chars.count() == 0);
-}
+// #[test]
+// fn check_if_null_test() {
+//     let mut str = String::from("null");
+//     let mut chars = str.chars();
+//     let char = chars.next().unwrap();
+//     assert_eq!(char, 'n');
+//     let mut vec = Vec::new();
+//     check_if_null(&mut chars, &mut vec);
+//     assert!(vec.len() > 0);
+//     assert!(chars.count() == 0);
+// }
 
 #[test]
 fn get_string_value_test() {

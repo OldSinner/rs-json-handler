@@ -22,9 +22,13 @@ impl JsonEntity {
     pub fn flush_to_string(self) -> String {
         self.get_value_as_string()
     }
-
-    pub fn from_chars(chars: &mut Chars) -> JsonEntity {
-        JsonEntity::Number(1.1)
+    pub fn add(&mut self, key: &str, value: JsonEntity) {
+        match self {
+            JsonEntity::Object(map) => {
+                map.insert(key.to_string(), value);
+            }
+            _ => panic!("Wront Type! That Shouldn't happend! Panic! Abort Mission!"),
+        }
     }
 }
 

@@ -8,7 +8,7 @@ pub struct JsonTokenValue {
     value_type: JsonTokenType,
     value: String,
 }
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum JsonTokenType {
     BraceOpen,
     BraceClose,
@@ -46,8 +46,37 @@ fn build_array(vec: &mut Vec<JsonTokenValue>) -> JsonEntity {
     todo!()
 }
 
+fn get_next_token(vec: &mut Vec<JsonTokenValue>) -> JsonTokenValue {
+    let next_token = vec.pop();
+    match next_token {
+        Some(next_token) => next_token,
+        None => panic!("Expected value!"),
+    }
+}
+
 fn build_object(vec: &mut Vec<JsonTokenValue>) -> JsonEntity {
-    todo!()
+    let mut obj = JsonEntity::new_object();
+    while let Some(token) = vec.pop() {
+        match token.value_type {
+            JsonTokenType::BraceClose => {
+                break;
+            }
+            JsonTokenType::String => {
+                let key = token.value;
+                let next_token = get_next_token(vec);
+                if next_token.value_type != JsonTokenType::Colon {
+                    panic!("Expected String key in object")
+                }
+                let next_token = get_next_token(vec);
+                obj.add(key, parse_value(next_token, vec))
+            }
+            JsonTokenType::Comma => {
+                continue;
+            }
+            _ => panic!("Unexpected token"),
+        }
+    }
+    obj
 }
 
 fn build_token_vec(chars: &mut Chars) -> Vec<JsonTokenValue> {

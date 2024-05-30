@@ -22,7 +22,11 @@ impl JsonEntity {
     pub fn flush_to_string(self) -> String {
         self.get_value_as_string()
     }
-    pub fn add(&mut self, key: &str, value: JsonEntity) {
+    pub fn new_object() -> JsonEntity {
+        let map = HashMap::new();
+        JsonEntity::Object(map)
+    }
+    pub fn add(&mut self, key: String, value: JsonEntity) {
         match self {
             JsonEntity::Object(map) => {
                 map.insert(key.to_string(), value);
